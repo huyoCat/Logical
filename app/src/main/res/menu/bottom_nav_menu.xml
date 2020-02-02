@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/home_formal"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_msg"
+        android:icon="@drawable/msg_formal"
+        android:title="@string/title_msg"/>
+
+    <item
+        android:id="@+id/navigation_book"
+        android:icon="@drawable/book_formal"
+        android:title="@string/title_book" />
+
+    <item
+        android:id="@+id/navigation_write"
+        android:icon="@drawable/write_formal"
+        android:title="@string/title_write" />
+
+</menu>

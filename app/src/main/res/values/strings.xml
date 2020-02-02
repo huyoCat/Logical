@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Logical_0.1</string>
+    <string name="title_home">主页</string>
+    <string name="title_write">笔记</string>
+    <string name="title_msg">消息</string>
+    <string name="title_book">脆皮鸭</string>
+</resources>

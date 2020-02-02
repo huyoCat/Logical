@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Tolead_b"
+        android:title="导入本地书"/>
+
+    <item
+        android:id="@+id/share_item"
+        android:title="分享今日快乐"/>
+
+    <item
+        android:id="@+id/help_item"
+        android:title="帮哥哥debug"/>
+
+</menu>

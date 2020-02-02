@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name='Logical_0.1'

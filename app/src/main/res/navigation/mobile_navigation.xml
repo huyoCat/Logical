@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.logical_01.ui.home.HomeFragment"
+        android:label="您好，我是Lo"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_msg"
+        android:name="com.example.logical_01.ui.msg.MsgFragment"
+        android:label="Lo"
+        tools:layout="@layout/fragment_msg" />
+
+    <fragment
+        android:id="@+id/navigation_book"
+        android:name="com.example.logical_01.ui.book.BookFragment"
+        android:label="今日快乐源泉"
+        tools:layout="@layout/fragment_book" />
+
+    <fragment
+        android:id="@+id/navigation_write"
+        android:name="com.example.logical_01.ui.write.WriteFragment"
+        android:label="给太太递笔.jpg"
+        tools:layout="@layout/fragment_write" />
+</navigation>
