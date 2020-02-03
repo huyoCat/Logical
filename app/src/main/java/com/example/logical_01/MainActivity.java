@@ -5,11 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.logical_01.ui.book.Book;
 import com.example.logical_01.ui.book.BookAdapter;
+import com.example.logical_01.ui.book.BookFragment;
 import com.example.logical_01.ui.home.HomeFragment;
 import com.example.logical_01.ui.msg.MsgFragment;
 import com.example.logical_01.ui.write.WriteFragment;
@@ -18,16 +20,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,29 +72,31 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Book> bookList	= new ArrayList<>();
 
-    private BottomNavigationView bottomNavigationView;
+    //底部菜单栏3个TextView
+    @BindView(R.id.home_bottom) TextView mhome;
+    @BindView(R.id.message_bottom) TextView mmsg;
+    @BindView(R.id.book_bottom) TextView mbook;
+    @BindView(R.id.write_bottom) TextView mwrite;
+
     private Fragment home_fragment;
     private Fragment message_fragment;
     private Fragment book_fragment;
     private Fragment write_fragment;
-    private Fragment[] fragments;
-    private int lastfragment;//用于记录上个选择的Fragment
+    private int lastfragment=0;//用于记录上个选择的Fragment
 
-    private FrameLayout contentLayout;//容器
-    private BottomNavigationView mainBottomView;//底部导航
-    private List<Fragment> fragmentList = new ArrayList<>();
 
-    private static final String HOME_FRAGMENT_KEY = "home_Fragment";
-    private static final String MSG_FRAGMENT_KEY = "message_Fragment";
-    private static final String BOOK_FRAGMENT_KEY = "book_Fragment";
-    private static final String WRITE_FRAGMENT_KEY = "write_Fragment";
+    private static final int HOME_FRAGMENT_KEY = 0;
+    private static final int MSG_FRAGMENT_KEY = 1;
+    private static final int BOOK_FRAGMENT_KEY = 2;
+    private static final int WRITE_FRAGMENT_KEY = 3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        /*BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -98,193 +104,179 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        NavigationUI.setupWithNavController(navView, navController);*/
 
-        //底部导航
-
-        //if (savedInstanceState != null) {
-
-            /*获取保存的fragment  没有的话返回null*/
-            /*home_fragment = (HomeFragment) getSupportFragmentManager().getFragment(savedInstanceState, HOME_FRAGMENT_KEY);
-            message_fragment = (MsgFragment) getSupportFragmentManager().getFragment(savedInstanceState, MSG_FRAGMENT_KEY);
-            book_fragment = (BookFragment) getSupportFragmentManager().getFragment(savedInstanceState, BOOK_FRAGMENT_KEY);
-            write_fragment = (WriteFragment) getSupportFragmentManager().getFragment(savedInstanceState, WRITE_FRAGMENT_KEY);
-
-            addToList(home_fragment);
-            addToList(message_fragment);
-            addToList(book_fragment);
-            addToList(write_fragment);
-        } else {
-            initFragment();
-        }*/
-            //initFragment();
-    }
-
-    /*private void addToList(Fragment fragment) {
-        if (fragment != null) {
-            fragmentList.add(fragment);
+        ButterKnife.bind(this);
+        //根据传入的Bundle对象判断Activity是正常启动还是销毁重建
+        if(savedInstanceState == null){
+            //设置第一个Fragment默认选中
+            setFragment(HOME_FRAGMENT_KEY);
         }
     }
-
-    private void initView() {
-        contentLayout = (FrameLayout) findViewById(R.id.nav_host_fragment);
-        mainBottomView = (BottomNavigationView) findViewById(R.id.nav_view);
-        mainBottomView.setOnNavigationItemSelectedListener(this);
-    }
-
-    private void initFragment() {
-        /* 默认显示home  fragment*/
-        /*home_fragment = new HomeFragment();
-        addFragment(home_fragment);
-        showFragment(home_fragment);
-    }
-
-    /*添加fragment*/
-    /*private void addFragment(Fragment fragment) {
-        /*判断该fragment是否已经被添加过  如果没有被添加  则添加*/
-        /*if (!fragment.isAdded()) {
-            getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment, fragment).commit();
-            /*添加到 fragmentList*/
-            /*fragmentList.add(fragment);
-        }
-    }
-
-    /*显示fragment*/
-    /*private void showFragment(Fragment fragment) {
-        for (Fragment frag : fragmentList) {
-            if (frag != fragment) {
-                /*先隐藏其他fragment*/
-                /*getSupportFragmentManager().beginTransaction().hide(frag).commit();
-            }
-        }
-        getSupportFragmentManager().beginTransaction().show(fragment).commit();
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.navigation_home:
-                if (home_fragment == null) {
-                    home_fragment = new HomeFragment();
-                }
-                addFragment(home_fragment);
-                showFragment(home_fragment);
-                break;
-
-            case R.id.navigation_msg:
-                if (message_fragment == null) {
-                    message_fragment = new MsgFragment();
-                }
-                addFragment(message_fragment);
-                showFragment(message_fragment);
-                break;
-
-            case R.id.navigation_book:
-                if (book_fragment == null) {
-                    book_fragment = new BookFragment();
-                }
-                addFragment(book_fragment);
-                showFragment(book_fragment);
-                break;
-
-            case R.id.navigation_write:
-                if (write_fragment==null){
-                    write_fragment=new WriteFragment();
-                }
-                addFragment(write_fragment);
-                showFragment(write_fragment);
-                break;
-        }
-        return true;
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
-        /*fragment不为空时 保存*/
-        /*if (home_fragment != null) {
-            getSupportFragmentManager().putFragment(outState, HOME_FRAGMENT_KEY, home_fragment);
-        }
-        if (message_fragment != null) {
-            getSupportFragmentManager().putFragment(outState, MSG_FRAGMENT_KEY, message_fragment);
-        }
-        if (book_fragment != null) {
-            getSupportFragmentManager().putFragment(outState, BOOK_FRAGMENT_KEY, book_fragment);
-        }
-        if (write_fragment != null) {
-            getSupportFragmentManager().putFragment(outState, WRITE_FRAGMENT_KEY, write_fragment);
-        }
+        //通过onSaveInstanceState方法保存当前显示的fragment
+        outState.putInt("fragment_id", lastfragment);
         super.onSaveInstanceState(outState);
-    }*/
-
-    private void initFragment() {
-        home_fragment=new HomeFragment();
-        message_fragment = new MsgFragment();
-        //book_fragment = new BookFragment();
-        write_fragment = new WriteFragment();
-        fragments = new Fragment[]{home_fragment, message_fragment, book_fragment,write_fragment};
-        lastfragment = 0;
-        getSupportFragmentManager().beginTransaction().replace(
-                R.id.nav_host_fragment, home_fragment).show(home_fragment).commit();
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_view);
-        bottomNavigationView.setOnNavigationItemSelectedListener(changeFragment);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener changeFragment = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        super.onRestoreInstanceState(savedInstanceState);
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        //通过FragmentManager获取保存在FragmentTransaction中的Fragment实例
+        home_fragment = mFragmentManager.findFragmentByTag("home_fragment");
+        message_fragment = mFragmentManager.findFragmentByTag("message_fragment");
+        book_fragment = mFragmentManager.findFragmentByTag("book_fragment");
+        write_fragment = mFragmentManager.findFragmentByTag("write_fragment");
+        //恢复销毁前显示的Fragment
+        setFragment(savedInstanceState.getInt("fragment_id"));
+    }
 
-            switch (item.getItemId()) {
-                case R.id.navigation_home: {
-                    if (lastfragment != 0) {
-                        switchFragment(lastfragment, 0);
-                        lastfragment = 0;
-                    }
-                    return true;
+    @OnClick({R.id.home_bottom, R.id.message_bottom,R.id.book_bottom, R.id.write_bottom})
+    public void onClick(View v) {
+        RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycle_book);
+        switch (v.getId()) {
+            default:
+                break;
+            case R.id.home_bottom:
+                recyclerView.setVisibility(View.GONE);
+                setFragment(HOME_FRAGMENT_KEY);
+                break;
+            case R.id.message_bottom:
+                recyclerView.setVisibility(View.GONE);
+                setFragment(MSG_FRAGMENT_KEY);
+                break;
+            case R.id.book_bottom:
+                setFragment(BOOK_FRAGMENT_KEY);
+                initBook();
+                recyclerView.setVisibility(View.VISIBLE);
+                StaggeredGridLayoutManager layoutManager = new
+                        StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+                recyclerView.setLayoutManager(layoutManager);
+                BookAdapter adapter=new BookAdapter(bookList);
+                recyclerView.setAdapter(adapter);
+                break;
+            case R.id.write_bottom:
+                recyclerView.setVisibility(View.GONE);
+                setFragment(WRITE_FRAGMENT_KEY);
+                break;
+        }
+    }
+
+    private void setFragment(int index){
+        //获取Fragment管理器
+        FragmentManager mFragmentManager = getSupportFragmentManager();
+        //开启事务
+        FragmentTransaction mTransaction = mFragmentManager.beginTransaction();
+        //隐藏所有Fragment
+        hideFragments(mTransaction);
+        switch (index){
+            default:
+                break;
+            case HOME_FRAGMENT_KEY:
+                lastfragment = HOME_FRAGMENT_KEY;
+                //设置菜单栏为选中状态（修改文字和图片颜色）
+                mhome.setTextColor(getResources().getColor(R.color.colorPrimary));
+                mhome.setCompoundDrawablesWithIntrinsicBounds(0,
+                        R.mipmap.home_later,0,0);
+                //显示对应Fragment
+                if(home_fragment == null){
+                    home_fragment = new HomeFragment();
+                    mTransaction.add(R.id.container, home_fragment, "home_fragment");
+                }else {
+                    mTransaction.show(home_fragment);
                 }
-                case R.id.navigation_msg: {
-                    if (lastfragment != 1) {
-                        switchFragment(lastfragment, 1);
-                        lastfragment = 1;
-                    }
-                    return true;
+                break;
+            case MSG_FRAGMENT_KEY:
+                lastfragment = MSG_FRAGMENT_KEY;
+                //设置菜单栏为选中状态（修改文字和图片颜色）
+                mmsg.setTextColor(getResources().getColor(R.color.colorPrimary));
+                mmsg.setCompoundDrawablesWithIntrinsicBounds(0,
+                        R.mipmap.message_later,0,0);
+                //显示对应Fragment
+                if(message_fragment == null){
+                    message_fragment = new MsgFragment();
+                    mTransaction.add(R.id.container, message_fragment, "message_fragment");
+                }else {
+                    mTransaction.show(message_fragment);
                 }
-                case R.id.navigation_book: {
-                    if (lastfragment != 2) {
-                        switchFragment(lastfragment, 2);
-                        lastfragment = 2;
-                    }
-                    initBook();
+                break;
+            case BOOK_FRAGMENT_KEY:
+                lastfragment = BOOK_FRAGMENT_KEY;
+                //设置菜单栏为选中状态（修改文字和图片颜色）
+                mbook.setTextColor(getResources().getColor(R.color.colorPrimary));
+                mbook.setCompoundDrawablesWithIntrinsicBounds(0,
+                        R.mipmap.book_later,0,0);
+                //显示对应Fragment
+                if(book_fragment == null){
+                    book_fragment = new BookFragment();
+                    mTransaction.add(R.id.container, book_fragment, "book_fragment");
+                }else {
+                    mTransaction.show(book_fragment);
+                }
+                break;
+            case WRITE_FRAGMENT_KEY:
+                lastfragment = WRITE_FRAGMENT_KEY;
+                //设置菜单栏为选中状态（修改文字和图片颜色）
+                mwrite.setTextColor(getResources().getColor(R.color.colorPrimary));
+                mwrite.setCompoundDrawablesWithIntrinsicBounds(0,
+                        R.mipmap.write_later,0,0);
+                //显示对应Fragment
+                if(write_fragment == null){
+                    write_fragment = new WriteFragment();
+                    mTransaction.add(R.id.container, write_fragment, "write_fragment");
+                }else {
+                    mTransaction.show(write_fragment);
+                }
+                break;
+        }
+        //提交事务
+        mTransaction.commit();
+    }
+
+    private void hideFragments(FragmentTransaction transaction){
+        if(home_fragment != null){
+            //隐藏Fragment
+            transaction.hide(home_fragment);
+            //将对应菜单栏设置为默认状态
+            mhome.setTextColor(getResources().getColor(R.color.colorText));
+            mhome.setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.mipmap.home_before,0,0);
+        }
+        if(message_fragment != null){
+            transaction.hide(message_fragment);
+            //将对应菜单栏设置为默认状态
+            mmsg.setTextColor(getResources().getColor(R.color.colorText));
+            mmsg.setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.mipmap.message_before,0,0);
+        }
+        if(book_fragment != null){
+            transaction.hide(book_fragment);
+            //将对应菜单栏设置为默认状态
+            mbook.setTextColor(getResources().getColor(R.color.colorText));
+            mbook.setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.mipmap.book_before,0,0);
+        }
+        if(write_fragment != null){
+            transaction.hide(write_fragment);
+            //将对应菜单栏设置为默认状态
+            mwrite.setTextColor(getResources().getColor(R.color.colorText));
+            mwrite.setCompoundDrawablesWithIntrinsicBounds(0,
+                    R.mipmap.write_before,0,0);
+        }
+    }
+
+
+                   /* initBook();
                     RecyclerView recyclerView=(RecyclerView)findViewById(R.id.text_book);
                     StaggeredGridLayoutManager layoutManager = new
                             StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
                     recyclerView.setLayoutManager(layoutManager);
                     BookAdapter adapter=new BookAdapter(bookList);
-                    recyclerView.setAdapter(adapter);
-                    return true;
-                }
-                case R.id.navigation_write: {
-                    if (lastfragment != 3) {
-                        switchFragment(lastfragment, 3);
-                        lastfragment = 3;
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-    };
+                    recyclerView.setAdapter(adapter);*/
 
-    //切换Fragment
-    private void switchFragment(int lastfragment, int index) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        fragments[lastfragment].setMenuVisibility(true);
-        transaction.hide(fragments[lastfragment]);//隐藏上个Fragment
-        if (fragments[index].isAdded() == false) {
-            transaction.add(R.id.nav_host_fragment, fragments[index]);
-        }
-        transaction.show(fragments[index]).commitAllowingStateLoss();
-    }
 
     private void initBook(){
         Book book1 = new Book("《某某》");

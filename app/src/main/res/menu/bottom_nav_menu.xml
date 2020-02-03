@@ -3,22 +3,22 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/home_formal"
+        android:icon="@mipmap/home_before"
         android:title="@string/title_home" />
 
     <item
         android:id="@+id/navigation_msg"
-        android:icon="@drawable/msg_formal"
+        android:icon="@mipmap/message_before"
         android:title="@string/title_msg"/>
 
     <item
         android:id="@+id/navigation_book"
-        android:icon="@drawable/book_formal"
+        android:icon="@mipmap/book_before"
         android:title="@string/title_book" />
 
     <item
         android:id="@+id/navigation_write"
-        android:icon="@drawable/write_formal"
+        android:icon="@mipmap/write_before"
         android:title="@string/title_write" />
 
 </menu>

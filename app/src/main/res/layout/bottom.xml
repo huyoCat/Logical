@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:id="@+id/home_bottom"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/home_before"
+        android:text="@string/title_home"
+        android:textSize="13sp"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/message_bottom"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/message_before"
+        android:text="@string/title_msg"
+        android:textSize="13sp"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/book_bottom"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/book_before"
+        android:text="@string/title_book"
+        android:textSize="13sp"
+        android:gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/write_bottom"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/write_before"
+        android:text="@string/title_write"
+        android:textSize="13sp"
+        android:gravity="center_horizontal" />
+
+</LinearLayout>
