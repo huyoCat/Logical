@@ -16,20 +16,8 @@ import com.example.logical_01.R;
 
 public class MsgFragment extends Fragment {
 
-    private MsgViewModel msgViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        msgViewModel =
-                ViewModelProviders.of(this).get(MsgViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_msg, container, false);
-        final TextView textView = root.findViewById(R.id.text_msg);
-        msgViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+        return inflater.inflate(R.layout.fragment_msg, container, false);
     }
 }

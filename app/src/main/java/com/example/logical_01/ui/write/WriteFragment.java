@@ -16,20 +16,8 @@ import com.example.logical_01.R;
 
 public class WriteFragment extends Fragment {
 
-    private WriteViewModel writeViewModel;
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        writeViewModel =
-                ViewModelProviders.of(this).get(WriteViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_write, container, false);
-        final TextView textView = root.findViewById(R.id.text_write);
-        writeViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        return root;
+        return inflater.inflate(R.layout.fragment_write, container, false);
     }
 }

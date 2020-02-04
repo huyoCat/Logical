@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +16,8 @@ import com.example.logical_01.ui.book.Book;
 import com.example.logical_01.ui.book.BookAdapter;
 import com.example.logical_01.ui.book.BookFragment;
 import com.example.logical_01.ui.home.HomeFragment;
+import com.example.logical_01.ui.msg.Msg;
+import com.example.logical_01.ui.msg.MsgAdapter;
 import com.example.logical_01.ui.msg.MsgFragment;
 import com.example.logical_01.ui.write.WriteFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -22,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -70,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //message部分：
+    private List<Msg>msgList=new ArrayList<>();
+    private EditText inputText;
+    private Button send;
+    private RecyclerView msgRecyclerView;
+    private MsgAdapter adapter;
+
+
+    //book部分：
+
     private List<Book> bookList	= new ArrayList<>();
 
     //底部菜单栏3个TextView
@@ -83,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
     private Fragment book_fragment;
     private Fragment write_fragment;
     private int lastfragment=0;//用于记录上个选择的Fragment
-
 
     private static final int HOME_FRAGMENT_KEY = 0;
     private static final int MSG_FRAGMENT_KEY = 1;
@@ -137,18 +152,46 @@ public class MainActivity extends AppCompatActivity {
     @OnClick({R.id.home_bottom, R.id.message_bottom,R.id.book_bottom, R.id.write_bottom})
     public void onClick(View v) {
         RecyclerView recyclerView=(RecyclerView)findViewById(R.id.recycle_book);
+        LinearLayout linearLayout=(LinearLayout)findViewById(R.id.msg_input);
         switch (v.getId()) {
             default:
                 break;
             case R.id.home_bottom:
                 recyclerView.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
                 setFragment(HOME_FRAGMENT_KEY);
                 break;
             case R.id.message_bottom:
                 recyclerView.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
                 setFragment(MSG_FRAGMENT_KEY);
+                initMsgs();//初始化消息数据
+                recyclerView.setVisibility(View.VISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+                inputText=(EditText)findViewById(R.id.input_text);
+                send=(Button)findViewById(R.id.send);
+                msgRecyclerView=(RecyclerView)findViewById(R.id.recycle_book);
+                LinearLayoutManager LayoutManager=new LinearLayoutManager(this);
+                msgRecyclerView.setLayoutManager(LayoutManager);
+                adapter=new MsgAdapter(msgList);
+                msgRecyclerView.setAdapter(adapter);
+                send.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        String content=inputText.getText().toString();
+                        if (!"".equals(content)){
+                            Msg msg=new Msg(content,Msg.TYPE_SENT);
+                            msgList.add(msg);
+                            adapter.notifyItemInserted(msgList.size()-1);//当有消息时，刷新RecyclerView中的显示
+                            msgRecyclerView.scrollToPosition(msgList.size()-1);//将RecyclerView定位到最后一行
+                            inputText.setText("");//清空输入框中的内容
+                        }
+                    }
+                });
                 break;
             case R.id.book_bottom:
+                recyclerView.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
                 setFragment(BOOK_FRAGMENT_KEY);
                 initBook();
                 recyclerView.setVisibility(View.VISIBLE);
@@ -160,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.write_bottom:
                 recyclerView.setVisibility(View.GONE);
+                linearLayout.setVisibility(View.GONE);
                 setFragment(WRITE_FRAGMENT_KEY);
                 break;
         }
@@ -172,10 +216,12 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction mTransaction = mFragmentManager.beginTransaction();
         //隐藏所有Fragment
         hideFragments(mTransaction);
+        LinearLayout linearLayout=(LinearLayout)findViewById(R.id.msg_input);
         switch (index){
             default:
                 break;
             case HOME_FRAGMENT_KEY:
+                linearLayout.setVisibility(View.GONE);
                 lastfragment = HOME_FRAGMENT_KEY;
                 //设置菜单栏为选中状态（修改文字和图片颜色）
                 mhome.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -278,6 +324,15 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.setAdapter(adapter);*/
 
 
+
+    private void initMsgs(){
+        Msg msg1=new Msg("Hello world,I'm Lo.",Msg.TYPE_RECEIVED);
+        msgList.add(msg1);
+        Msg msg2=new Msg("Hello...I'm Co.",Msg.TYPE_SENT);
+        msgList.add(msg2);
+        Msg msg3=new Msg("Nice talking to you.",Msg.TYPE_RECEIVED);
+        msgList.add(msg3);
+    }
     private void initBook(){
         Book book1 = new Book("《某某》");
         bookList.add(book1);
